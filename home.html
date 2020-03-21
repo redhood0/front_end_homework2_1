@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<!--
+    @Author zq
+    @Date  2020/3/21 9:12
+    @Version 1.0
+-->
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>order-manager</title>
+</head>
+<body>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.slim.min.js"
+            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="http://code.z01.com/v4/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://code.z01.com/zico.min.css">
+    <link rel="stylesheet" href="./css/myCss.css">
+    <!--事件处理插件-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-light shadow-sm" style="background-color: #e3f2fd;">
+            <a class="navbar-brand mb-0 h1" href="#">Order management</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- 导航栏 -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!--            <ul class="navbar-nav mr-auto">-->
+                <!--                <li class="nav-item active">-->
+                <!--                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link" href="#">Link</a>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item dropdown">-->
+                <!--                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"-->
+                <!--                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+                <!--                        Dropdown-->
+                <!--                    </a>-->
+                <!--                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+                <!--                        <a class="dropdown-item" href="#">Action</a>-->
+                <!--                        <a class="dropdown-item" href="#">Another action</a>-->
+                <!--                        <div class="dropdown-divider"></div>-->
+                <!--                        <a class="dropdown-item" href="#">Something else here</a>-->
+                <!--                    </div>-->
+                <!--                </li>-->
+                <!--                <li class="nav-item">-->
+                <!--                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>-->
+                <!--                </li>-->
+                <!--            </ul>-->
+                <form class="form-inline my-2 my-lg-0 ml-auto">
+                    <span class="mr-sm-2" href="#">brand：</span>
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+        <!-- 左侧表格 -->
+        <div class="container-fluid">
+            <div id="content" class="row">
+
+                <div class="col-8 mt-3 ">
+                    <table class="table table-bordered shadow-sm table-striped">
+                        <caption class="total">total：{{ total }}$</caption>
+                        <thead>
+                        <tr>
+                            <th>brand</th>
+                            <th>order date</th>
+                            <th>price($)</th>
+                            <th>num</th>
+                            <th>operation</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="tr list-leave-active" v-for="(item,index) in items">
+                            <td>{{item.brand}}</td>
+                            <td>{{item.date | dateToStr }}</td>
+                            <td>{{item.price}}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary" @click="subtractNum(index)">-</button>
+                                <span class="mx-4">{{item.num}}</span>
+                                <button type="button" class="btn btn-primary" @click="addNum(index)">+</button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary" @click="deletItem(index)">delete
+                                </button>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 右侧表单 -->
+                <div class="col-4  mt-3 ml-auto ">
+                    <div class="shadow mr-5 p-5">
+                        <h2>Create Order</h2>
+                        <hr>
+                        <form>
+                            <div class="form-group">
+                                <label>brand</label>
+                                <input type="text" class="form-control" placeholder="Such as : iphone,mac"
+                                       v-model="createGoods.brand">
+                            </div>
+                            <div class="form-group">
+                                <label>price</label>
+                                <input type="number" class="form-control" placeholder="Such as : 50"
+                                       v-model="createGoods.price">
+                            </div>
+                            <div class="form-group">
+                                <label>num</label>
+                                <input type="number" class="form-control" placeholder="Such as : 3"
+                                       v-model="createGoods.num">
+                            </div>
+                            <button type="submit" class="btn btn-primary" @click="addGoods">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  vue代码块-->
+    <script>
+        Vue.filter('dateToStr', function (value, format = "YYYY-MM-DD HH:mm:ss") { //利用ES6形参默认值
+            return moment(value).format(format)
+        })
+
+        // class 写法
+        class Goods {
+            constructor(brand, date, price, num) {
+                this.brand = brand;
+                this.date = date;
+                this.price = price;
+                this.num = num;
+            }
+
+            toString() {
+                return '(' + this.brand + ',' + this.date + ',' + this.price + ',' + this.num + ')';
+            }
+        }
+
+        var fakeData = [
+            new Goods('iPhoneX', '2020-03-19 11:25:25', 10688, 2),
+            new Goods('Mac', '2020-03-20 11:25:25', 10009, 1),
+            new Goods('iPhoneXX', '2020-03-21 11:25:25', 21000, 1)
+        ];
+
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                items: fakeData,
+                total: 0,
+                createGoods: {
+                    brand: '',
+                    date: '',
+                    price: '',
+                    num: '',
+                }
+            },
+            mounted: function () {
+                // `this` 指向 vm 实例
+                console.log('a')
+                this.upDateTotal();
+            },
+            methods: {
+                deletItem: function (index) {
+                    this.items.splice(index, 1);
+                },
+                upDateTotal: function () {
+                    for (item of this.items) {
+                        let money = parseInt(item.price) * parseInt(item.num);
+                        console.log(">>>>>----" + money);
+                        this.total += money;
+                    }
+                },
+                addNum: function (index) {
+                    this.items[index].num++;
+                    this.upDateTotal();
+                },
+                subtractNum: function (index) {
+                    if (this.items[index].num > 1) {
+                        this.items[index].num--;
+                        this.upDateTotal();
+                    }
+                },
+                addGoods() {
+                    // this.push();
+                    if (this.createGoods.brand == '') {
+                        alert("brand can not be null");
+                        return;
+                    }
+                    if (this.createGoods.price == '') {
+                        alert("price can not be null");
+                        return;
+                    }
+                    if (this.createGoods.num == '') {
+                        alert("number can not be null");
+                        return;
+                    }
+
+                    console.log(this.createGoods);
+                    this.createGoods.date = new Date();
+                    this.items.push(this.createGoods);
+                    this.clearInput();
+                    // this.createGoods = {};
+                },
+                clearInput() {
+                    this.createGoods = {
+                        brand: '',
+                        date: '',
+                        price: '',
+                        num: '',
+                    }
+                }
+
+            },
+        });
+    </script>
+
+</body>
+</html>
